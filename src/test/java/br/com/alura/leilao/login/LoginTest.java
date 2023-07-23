@@ -9,7 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class LoginTest {
 
-    public static final String URL_LOGIN = "http://localhost:8080/login?error";
+    public static final String URL_LOGIN = "http://localhost:8080/login";
     private WebDriver browser;
 
     @BeforeAll
@@ -35,7 +35,7 @@ public class LoginTest {
         browser.findElement(By.id("password")).sendKeys("pass");
         browser.findElement(By.id("login-form")).submit();
 
-        Assert.assertFalse(browser.getCurrentUrl().equals("http://localhost:8080/login"));
+        Assert.assertFalse(browser.getCurrentUrl().equals(URL_LOGIN));
         Assert.assertEquals("fulano", browser.findElement(By.id("usuario-logado")).getText());
 
     }
@@ -47,9 +47,19 @@ public class LoginTest {
         browser.findElement(By.id("password")).sendKeys("pass");
         browser.findElement(By.xpath("//button")).click();
 
-        Assert.assertTrue(browser.getCurrentUrl().equals(URL_LOGIN));
+        Assert.assertTrue(browser.getCurrentUrl().equals("http://localhost:8080/login?error"));
         Assert.assertTrue(browser.getPageSource().contains("Usuário e senha inválidos."));
         Assert.assertThrows(NoSuchElementException.class, () -> browser.findElement(By.id("usuario-logado")));
+
+    }
+
+    @Test
+    public void NaoDeveriaAcessarPaginaRestritaSemEstarLogado() {
+
+            this.browser.navigate().to("http://localhost:8080/leiloes/2");
+
+            Assert.assertTrue(browser.getCurrentUrl().equals(URL_LOGIN));
+            Assert.assertFalse(browser.getPageSource().contains("Dados do Leilão"));
 
     }
 
