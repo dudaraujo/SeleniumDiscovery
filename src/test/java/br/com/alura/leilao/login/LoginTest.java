@@ -16,7 +16,7 @@ public class LoginTest {
 
     @AfterEach
     public void AfterEach() {
-        loginPage.Fechar();
+        this.loginPage.Fechar();
     }
 
     @Test
